@@ -16,12 +16,18 @@
             self.items = ko.observableArray([1, 2]);
 
             self.getOptions = function () {
-              return {layoutMode: 'cellsByRow', rowHeight: 220, columnWidth: 160};
+              return {
+                layoutMode: 'cellsByRow',
+                cellsByRow: {
+                  columnWidth: 220,
+                  rowHeight: 160
+                }
+              };
             };
 
             setTimeout(function () {
               self.items([3, 2, 1]);
-              }, 1000);
+            }, 1000);
           }
 
           ko.applyBindings(new ViewModel());

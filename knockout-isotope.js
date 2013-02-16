@@ -133,20 +133,8 @@
                 isotopeOptions.getSortData = { index: ko.bindingHandlers.isotope._getSortData };
                 isotopeOptions.sortBy = 'index';
                 
-
-                console.log(isotopeOptions);
                 // Elements are added to the DOM, now initialize Isotope
-                $container.isotope({
-                    itemSelector: '.' + itemClass,
-                    filter: '.' + filterClass,
-                    getSortData: { index: ko.bindingHandlers.isotope._getSortData },
-                    sortBy: 'index',
-                    layout: 'cellsByRow',
-                    cellsByRow: {
-                        columnWidth: 240,
-                        rowHeight: 180
-                    }
-                });
+                $container.isotope(isotopeOptions);
             }
             else {
                 // Re-sort elements as their ordering may have changed
@@ -158,7 +146,9 @@
             }
 
             // Make this function depend on the view model, so it gets called for updates
-            ko.utils.unwrapObservable(valueAccessor());
+            var data = ko.bindingHandlers.isotope.makeTemplateValueAccessor(
+                        valueAccessor)().foreach;
+            ko.utils.unwrapObservable(data);
 
             // Update gets called upon initial rendering as well
             haveInitialized = true;
