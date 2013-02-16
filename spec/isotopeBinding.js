@@ -1,6 +1,6 @@
 "use strict";
 
-describe('Binding: Isotope', function () {
+describe('Knockout-Isotope', function () {
     var binding, element, $testNode, isotope, viewModel,
         $children;
 
@@ -10,19 +10,42 @@ describe('Binding: Isotope', function () {
         if ($existingNode.length > 0) {
             $existingNode.remove();
         }
-        $testNode = $('<div id="test-node" data-bind="isotope: items"><div class="item" data-bind="text: $data"></div></div>');
+        $testNode = $('<div id="test-node" style="display: none" data-bind="isotope: items"><div data-bind="text: $data"></div></div>');
         $('body').append($testNode);
-
-        viewModel = { items: ko.observableArray([1, 2]) };
     };
+
+    function applyBindings() {
+        ko.applyBindings(viewModel, $testNode[0]);
+    }
+        
+    // Get calls to isotope spy for a method (can be undefined)
+    function getIsotopeCalls(method) {
+        var calls = [];
+        _.each(isotope.calls, function (call, index) {
+            if (call.args[0] === method) {
+                calls.push({call: call, callIndex: index});
+            }
+        });
+
+        return calls;
+    }
 
     beforeEach(function () {
         prepareTestNode();
+        viewModel = { items: ko.observableArray([1, 2]) };
         element = $testNode[0];
         binding = ko.bindingHandlers.isotope;
         
         isotope = jasmine.createSpy('isotope').andCallFake(function () {
-            $children = $testNode.children();
+            expect(this[0]).toEqual($testNode[0]);
+            $children = $testNode.children().clone();
+
+            // Perform removal of elements, since this is Isotope's responsibility
+            if (arguments[0] === 'remove') {
+                // The second argument should be a jQuery selector of elements
+                // to remove
+                arguments[1].remove();
+            }
         });
         $.fn.isotope = isotope;
     });
@@ -40,48 +63,99 @@ describe('Binding: Isotope', function () {
                 }).not.toThrow();
     });
 
-    it('does not accept a null observable', function () {
+    it('accepts a null observable', function () {
         expect(function () {
             binding.init(element, function () {return null;});
-                }).toThrow();
+                }).not.toThrow();
     });
 
-    it('does not accept an undefined observable', function () {
+    it('accepts an undefined observable', function () {
         expect(function () {
             binding.init(element, function () {return undefined;});
-                }).toThrow();
+                }).not.toThrow();
     });
 
-    it('does not accept a scalar', function () {
+    it('accepts a scalar', function () {
         expect(function () {
             binding.init(element, function () { return 1; });
-                }).toThrow();
+                }).not.toThrow();
     });
 
-    it('does not accept a scalar observable', function () {
+    it('accepts a scalar observable', function () {
         expect(function () {
             binding.init(element, function () { return ko.observable(); });
-                }).toThrow();
+                }).not.toThrow();
     });
 
-    it('initializes isotope after adding child elements', function () {
-        var $children, i;
-        ko.applyBindings(viewModel);
+    it('expects at least one template element', function () {
+        $testNode.children().remove();
+        expect(function () {
+            applyBindings();
+        }).toThrow();
+    });
 
-        $children = $testNode.children();
+    it('expects no more than one template element', function () {
+        $testNode.append($('<div></div>'));
+        expect(function () {
+            applyBindings();
+        }).toThrow();
+    });
+
+    it('initializes isotope after child elements are instantiated', function () {
+        applyBindings();
+
         expect($children.length).toEqual(viewModel.items().length);
-        for (i in viewModel.items) {
-            expect($children[i].text()).toEqual(viewModel.items[i]);
+        for (var i in viewModel.items()) {
+            var $child = $($children[i]);
+            var item = viewModel.items()[i].toString();
+            expect($child.text()).toEqual(item);
         }
 
         expect(isotope).toHaveBeenCalledWith({
-            itemSelector: '.item',
-            layoutMode: 'cellsByRow'
+            itemSelector: '.' + ko.bindingHandlers.isotope.defaultItemClass,
+            filter: '.' + ko.bindingHandlers.isotope.defaultFilterClass,
+            getSortData: {
+                index: ko.bindingHandlers.isotope._getSortData
+            },
+            sortBy: 'index'
         });
         expect(isotope.calls.length).toEqual(1);
-        expect(isotope.mostRecentCall.object[0]).toEqual($testNode[0]);
+    });
 
-        expect(children);
+    it('registers added elements with isotope', function () {
+        var addItemsCalls, addItemsCall, value = 3;
+        applyBindings();
+        viewModel.items.unshift(value);
+
+        addItemsCalls = getIsotopeCalls('addItems');
+        // There should be one call to addItems
+        expect(addItemsCalls.length).toEqual(1);
+        addItemsCall = addItemsCalls[0];
+        expect(addItemsCall.call.args[1].text()).toEqual(value.toString());
+        // And then a no-arguments call, to perform element filtering
+        expect(isotope.calls[addItemsCall.callIndex+1].args.length).toEqual(0);
+    });
+
+    it('deletes elements through isotope', function () {
+        var removeCalls, removeCall, domValues, itemValues;
+        applyBindings();
+        viewModel.items.shift();
+
+        removeCalls = getIsotopeCalls('remove');
+        expect(removeCalls.length).toEqual(1);
+        domValues = _.map($testNode.children(), function (elem) {
+            return $(elem).text();
+        });
+        itemValues = _.map(viewModel.items(), function (item) {
+            return item.toString();
+        });
+        console.log(domValues);
+        console.log(itemValues);
+        expect(domValues).toEqual(itemValues);
+    });
+
+    it('supports parameters to isotope', function () {
+        $testNode.attr('data-bind', 'isotope: {data: items}');
     });
 });
 

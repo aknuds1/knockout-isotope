@@ -4,15 +4,24 @@
     
     <link rel="stylesheet" type="text/css" href="lib/style.css">
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="spec/lib/knockout-2.2.1.debug.js"></script>
-    <script type="text/javascript" src="../isotope/jquery.isotope.js"></script>
+    <script type="text/javascript" src="spec/lib/knockout-2.2.2.debug.js"></script>
+    <script type="text/javascript" src="spec/lib/jquery.isotope.js"></script>
 
     <script type="text/javascript" src="knockout-isotope.js"></script>
 
     <script type="text/javascript">
       $(document).ready(function () {
           function ViewModel() {
-            this.items = ko.observableArray([1]);
+            var self = this;
+            self.items = ko.observableArray([1, 2]);
+
+            self.getOptions = function () {
+              return {layoutMode: 'cellsByRow', rowHeight: 220, columnWidth: 160};
+            };
+
+            setTimeout(function () {
+              self.items([3, 2, 1]);
+              }, 1000);
           }
 
           ko.applyBindings(new ViewModel());
@@ -28,11 +37,10 @@
     </div>
     -->
 
-    <div id="container" data-bind="isotope: items">
-      <div  data-bind="text: $data"></div>
+    <div id="container" data-bind="isotope: { data: items, options: getOptions }">
+      <div data-bind="text: $data"></div>
     </div>
   </body>
 </html>
 
 <!-- vim: set sts=2 sw=2 et: -->
-
