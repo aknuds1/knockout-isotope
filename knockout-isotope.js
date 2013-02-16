@@ -12,7 +12,7 @@
         $elem = $(node);
         if (isInitializing !== true) {
             // Temporarily hide elements being added
-            $elem.removeClass(ko.bindingHandlers.isotope.filterClass);
+            $elem.removeClass(filterClass);
             newElems.push(node);
             $container.isotope('addItems', $elem);
             // This performs the filtering
