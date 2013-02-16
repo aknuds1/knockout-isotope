@@ -30,6 +30,18 @@ describe('Knockout-Isotope', function () {
         return calls;
     }
 
+    // Get default options for initializing isotope
+    function getDefaultIsotopeOptions() {
+        return {
+            itemSelector: '.' + ko.bindingHandlers.isotope.defaultItemClass,
+            filter: '.' + ko.bindingHandlers.isotope.defaultFilterClass,
+            getSortData: {
+                index: ko.bindingHandlers.isotope._getSortData
+            },
+            sortBy: 'index'
+        };
+    }
+
     beforeEach(function () {
         prepareTestNode();
         viewModel = { items: ko.observableArray([1, 2]) };
@@ -111,14 +123,7 @@ describe('Knockout-Isotope', function () {
             expect($child.text()).toEqual(item);
         }
 
-        expect(isotope).toHaveBeenCalledWith({
-            itemSelector: '.' + ko.bindingHandlers.isotope.defaultItemClass,
-            filter: '.' + ko.bindingHandlers.isotope.defaultFilterClass,
-            getSortData: {
-                index: ko.bindingHandlers.isotope._getSortData
-            },
-            sortBy: 'index'
-        });
+        expect(isotope).toHaveBeenCalledWith(getDefaultIsotopeOptions());
         expect(isotope.calls.length).toEqual(1);
     });
 
@@ -149,13 +154,53 @@ describe('Knockout-Isotope', function () {
         itemValues = _.map(viewModel.items(), function (item) {
             return item.toString();
         });
-        console.log(domValues);
-        console.log(itemValues);
         expect(domValues).toEqual(itemValues);
     });
 
     it('supports parameters to isotope', function () {
-        $testNode.attr('data-bind', 'isotope: {data: items}');
+        var clientOpts = {
+                layoutMode: 'cellsByRow',
+                cellsByRow: {
+                  columnWidth: 220,
+                  rowHeight: 160
+                }
+            }, opts;
+        viewModel.getIsotopeOptions = function () {
+            return clientOpts;
+        };
+        $testNode.attr('data-bind', 'isotope: { data: items, options: getIsotopeOptions }');
+        applyBindings();
+
+        opts = getDefaultIsotopeOptions();
+        ko.utils.extend(opts, clientOpts);
+        expect(isotope).toHaveBeenCalledWith(opts);
+    });
+
+    it('does not override vital parameters to isotope', function () {
+        var clientOpts = {
+                layoutMode: 'cellsByRow',
+                cellsByRow: {
+                  columnWidth: 220,
+                  rowHeight: 160
+                },
+                filter: '.filter',
+                itemSelector: '.item',
+                getSortData: {},
+                sortBy: 'myIndex'
+            }, opts;
+        viewModel.getIsotopeOptions = function () {
+            return clientOpts;
+        };
+        $testNode.attr('data-bind', 'isotope: { data: items, options: getIsotopeOptions }');
+        applyBindings();
+
+        opts = getDefaultIsotopeOptions();
+        _.each(clientOpts, function (value, key) {
+            if (key !== 'filter' && key !== 'itemSelector' && key !== 'getSortData' && key !== 'sortBy') {
+                opts[key] = value;
+            }
+        });
+        expect(isotope).toHaveBeenCalledWith(opts);
     });
 });
 

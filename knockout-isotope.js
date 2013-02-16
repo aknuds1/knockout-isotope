@@ -74,9 +74,9 @@
                 // If unwrappedValue.data is the array, preserve all relevant options and unwrap again value so we get updates
                 ko.utils.unwrapObservable(modelValue);
                 ko.utils.extend(options, {
-                    'foreach': unwrappedValue['data'],
-                    'as': unwrappedValue['as'],
-                    'includeDestroyed': unwrappedValue['includeDestroyed'],
+                    'foreach': unwrappedValue.data,
+                    'as': unwrappedValue.as,
+                    'includeDestroyed': unwrappedValue.includeDestroyed,
                     'templateEngine': ko.nativeTemplateEngine.instance
                 });
                 return options;
@@ -96,10 +96,11 @@
             parameters = ko.utils.unwrapObservable(valueAccessor());
             if (parameters && typeof parameters == 'object' && !('length' in parameters)) {
                 if (parameters.options) {
-                    isotopeOptions = parameters.options();
-                    if (typeof isotopeOptions !== 'object') {
+                    var clientOptions = parameters.options();
+                    if (typeof clientOptions !== 'object') {
                         throw new Error('isotopeOptions callback must return object');
                     }
+                    ko.utils.extend(isotopeOptions, clientOptions);
                 }
                 if (parameters.filterClass) {
                     filterClass = parameters.filterClass;
