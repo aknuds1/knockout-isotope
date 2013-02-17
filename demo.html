@@ -7,7 +7,7 @@
     <script type="text/javascript" src="spec/lib/knockout-2.2.2.debug.js"></script>
     <script type="text/javascript" src="spec/lib/jquery.isotope.js"></script>
 
-    <script type="text/javascript" src="knockout-isotope.js"></script>
+    <script type="text/javascript" src="lib/knockout-isotope.js"></script>
 
     <script type="text/javascript">
       $(document).ready(function () {
@@ -43,7 +43,7 @@
     </div>
     -->
 
-    <div id="container" data-bind="isotope: { data: items, options: getOptions }">
+    <div id="container" data-bind="isotope: { data: items, isotopeOptions: getOptions }">
       <div data-bind="text: $data"></div>
     </div>
   </body>

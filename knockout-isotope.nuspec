@@ -17,7 +17,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="knockout-isotope.js" target="Content\Scripts" /> 
-    <file src="knockout-isotope.min.js" target="Content\Scripts" /> 
+    <file src="lib\knockout-isotope.js" target="Content\Scripts" /> 
+    <file src="lib\knockout-isotope.min.js" target="Content\Scripts" /> 
   </files>
 </package>

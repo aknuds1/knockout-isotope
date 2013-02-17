@@ -170,7 +170,7 @@ describe('Knockout-Isotope', function () {
         viewModel.getIsotopeOptions = function () {
             return clientOpts;
         };
-        $testNode.attr('data-bind', 'isotope: { data: items, options: getIsotopeOptions }');
+        $testNode.attr('data-bind', 'isotope: { data: items, isotopeOptions: getIsotopeOptions }');
         applyBindings();
 
         opts = getDefaultIsotopeOptions();
@@ -193,7 +193,7 @@ describe('Knockout-Isotope', function () {
         viewModel.getIsotopeOptions = function () {
             return clientOpts;
         };
-        $testNode.attr('data-bind', 'isotope: { data: items, options: getIsotopeOptions }');
+        $testNode.attr('data-bind', 'isotope: { data: items, isotopeOptions: getIsotopeOptions }');
         applyBindings();
 
         opts = getDefaultIsotopeOptions();
