@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Knockout-Isotope</id>
+    <version>1.0.0</version>
+    <authors>Arve Knudsen</authors>
+    <owners>Arve Knudsen</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/aknuds1/knockout-isotope</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Isotope Knockout binding.</description>
+    <releaseNotes>First release</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <tags>knockout isotope javascript</tags>
+    <dependencies>
+      <dependency id="knockoutjs" version="2.2.2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="knockout-isotope.js" target="Content\Scripts" /> 
+    <file src="knockout-isotope.min.js" target="Content\Scripts" /> 
+  </files>
+</package>
