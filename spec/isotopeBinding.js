@@ -1,5 +1,7 @@
 "use strict";
 
+_.mixin(_.string.exports());
+
 describe('Knockout-Isotope', function () {
     var binding, element, $testNode, isotope, viewModel,
         $children;
@@ -200,6 +202,21 @@ describe('Knockout-Isotope', function () {
                 opts[key] = value;
             }
         });
+        expect(isotope).toHaveBeenCalledWith(opts);
+    });
+
+    it('parameterizes item class and filter class', function () {
+        var itemClass = 'item', filterClass = 'filter', bind =
+            _.sprintf('isotope: { data: items, itemClass: \'%s\', filterClass: \'%s\' }',
+                itemClass, filterClass), opts;
+        $testNode.attr('data-bind', bind);
+        applyBindings();
+
+        expect($testNode.children().hasClass(itemClass)).toBe(true);
+        expect($testNode.children().hasClass(filterClass)).toBe(true);
+        opts = getDefaultIsotopeOptions();
+        opts.itemSelector = '.' + itemClass;
+        opts.filter = '.' + filterClass;
         expect(isotope).toHaveBeenCalledWith(opts);
     });
 });
