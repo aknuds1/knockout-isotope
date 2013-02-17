@@ -95,3 +95,11 @@ The options are:
 </div>
 ...
 ```
+
+## Testing
+
+Knockout-Isotope is tested through Jasmine specifications, contained in
+'spec/isotopeBinding.js'. In order to run them, open 'spec/runner.html' in a
+browser.
+
+<!-- vim: set ff=unix sts=4 sw=4 et: -->
