@@ -59,12 +59,15 @@ allowing you to specifying options to Isotope, e.g. to control the layout mode.
 The options are:
 
 * itemClass
+
   Specify the class that Isotope elements should be adorned with
   (Knockout-Isotope does this automatically).
 * filterClass
+
   Specify the class that should be control whether Isotope elements are
   displayed or not (Knockout-Isotope applies this class automatically).
 * isotopeOptions
+
   This should be a callback on the view model that returns an object
   containing options for initializing Isotope. See [Isotope's documentation](http://isotope.metafizzy.co/docs/options.html) 
   for information on supported options. An options object can for instance look
