@@ -841,12 +841,6 @@
       this.reLayout( callback );
     },
 
-    reSort : function( callback ) {
-        this.updateSortData( this.$allAtoms );
-        this._sort();
-        this.reLayout( callback );
-     },
-
     // destroys widget, returns elements and container back (close) to original style
     destroy : function() {
 

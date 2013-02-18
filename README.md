@@ -5,8 +5,8 @@ Isotope binding for Knockout.
 ## Description
 
 This binding makes it possible to visualize a Knockout observableArray through
-the excellent Isotope jQuery plugin. See demo.html for a demonstration of the
-binding's functionality.
+the excellent [Isotope](https://github.com/desandro/isotope) jQuery plugin. See
+demo.html for a demonstration of the binding's functionality.
 
 ## Requirements
 
