@@ -5,16 +5,15 @@ Isotope binding for Knockout.
 ## Description
 
 This binding makes it possible to visualize a Knockout observableArray through
-the excellent Isotope jQuery plugin. See demo.html for a demonstration of the
-binding's functionality.
+the excellent [Isotope](https://github.com/desandro/isotope) jQuery plugin. See
+demo.html for a demonstration of the binding's functionality.
 
 ## Requirements
 
-Knockout-Isotope requires modified versions of [Knockout](https://github.com/aknuds1/knockout) 
-and [Isotope](https://github.com/aknuds1/isotope). Knockout had to be modified 
-in order to notify bindings of new elements before they're added to the DOM, 
-and Isotope had to be modified to support re-sorting elements as their indexes 
-change.
+Knockout-Isotope requires [Isotope](https://github.com/desandro/isotope) and a
+modified version of [Knockout](https://github.com/aknuds1/knockout).
+Knockout had to be modified in order to notify bindings of new elements before
+they're added to the DOM.
 
 ## Installation
 
