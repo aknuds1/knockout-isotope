@@ -593,7 +593,10 @@ ko.utils.domNodeDisposal = new (function () {
         ko.utils.domData.set(node, domDataKey, undefined);
     }
 
-    function cleanSingleNode(node) {
+    function cleanSingleNode(node, cleanOtherData) {
+        console.log('cleanOtherData: ' + cleanOtherData);
+        if (cleanOtherData !== false)
+            cleanOtherData = true;
         // Run all the dispose callbacks
         var callbacks = getDisposeCallbacksCollection(node, false);
         if (callbacks) {
@@ -602,27 +605,32 @@ ko.utils.domNodeDisposal = new (function () {
                 callbacks[i](node);
         }
 
+	console.log('Cleaning node:');
+	console.log($.data(node, 'isotope-sort-data'));
+
         // Also erase the DOM data
         ko.utils.domData.clear(node);
 
-        // Special support for jQuery here because it's so commonly used.
-        // Many jQuery plugins (including jquery.tmpl) store data using jQuery's equivalent of domData
-        // so notify it to tear down any resources associated with the node & descendants here.
-        if ((typeof jQuery == "function") && (typeof jQuery['cleanData'] == "function"))
-            jQuery['cleanData']([node]);
+        if (cleanOtherData) {
+            // Special support for jQuery here because it's so commonly used.
+            // Many jQuery plugins (including jquery.tmpl) store data using jQuery's equivalent of domData
+            // so notify it to tear down any resources associated with the node & descendants here.
+            if ((typeof jQuery == "function") && (typeof jQuery['cleanData'] == "function"))
+                jQuery['cleanData']([node]);
+        }
 
         // Also clear any immediate-child comment nodes, as these wouldn't have been found by
         // node.getElementsByTagName("*") in cleanNode() (comment nodes aren't elements)
         if (cleanableNodeTypesWithDescendants[node.nodeType])
-            cleanImmediateCommentTypeChildren(node);
+            cleanImmediateCommentTypeChildren(node, cleanOtherData);
     }
 
-    function cleanImmediateCommentTypeChildren(nodeWithChildren) {
+    function cleanImmediateCommentTypeChildren(nodeWithChildren, cleanOtherData) {
         var child, nextChild = nodeWithChildren.firstChild;
         while (child = nextChild) {
             nextChild = child.nextSibling;
             if (child.nodeType === 8)
-                cleanSingleNode(child);
+                cleanSingleNode(child, cleanOtherData);
         }
     }
 
@@ -642,10 +650,11 @@ ko.utils.domNodeDisposal = new (function () {
             }
         },
 
-        cleanNode : function(node) {
+        cleanNode : function(node, cleanOtherData) {
             // First clean this node, where applicable
+            console.log('cleanOther: ' + cleanOtherData);
             if (cleanableNodeTypes[node.nodeType]) {
-                cleanSingleNode(node);
+                cleanSingleNode(node, cleanOtherData);
 
                 // ... then its descendants, where applicable
                 if (cleanableNodeTypesWithDescendants[node.nodeType]) {
@@ -653,7 +662,7 @@ ko.utils.domNodeDisposal = new (function () {
                     var descendants = [];
                     ko.utils.arrayPushAll(descendants, node.getElementsByTagName("*"));
                     for (var i = 0, j = descendants.length; i < j; i++)
-                        cleanSingleNode(descendants[i]);
+                        cleanSingleNode(descendants[i], cleanOtherData);
                 }
             }
             return node;
@@ -3401,6 +3410,17 @@ ko.exportSymbol('utils.compareArrays', ko.utils.compareArrays);
         var itemsForAfterAddCallbacks = [];
         var mapData;
 
+        function myCleanNode(node) {
+            console.log('myCleanNode: ' + options['beforeRemove'] === undefined);
+            ko.cleanNode(node, options['beforeRemove'] === undefined);
+        }
+
+	console.log('lastMappingResult:');
+	for (i = 0; i < lastMappingResult.length; ++i) {
+	  console.log($.data(lastMappingResult[i].mappedNodes[1], 'isotope-sort-data'));
+	}
+	console.log('End lastMappingResult');
+
         function itemMovedOrRetained(editScriptIndex, oldPosition) {
             mapData = lastMappingResult[oldPosition];
             if (newMappingResultIndex !== oldPosition)
@@ -3471,7 +3491,8 @@ ko.exportSymbol('utils.compareArrays', ko.utils.compareArrays);
         callCallback(options['beforeMove'], itemsForMoveCallbacks);
 
         // Next remove nodes for deleted items (or just clean if there's a beforeRemove callback)
-        ko.utils.arrayForEach(nodesToDelete, options['beforeRemove'] ? ko.cleanNode : ko.removeNode);
+        console.log('Calling ' + options['beforeRemove'] ? myCleanNode : ko.removeNode);
+        ko.utils.arrayForEach(nodesToDelete, options['beforeRemove'] ? myCleanNode : ko.removeNode);
 
         // Next add/reorder the remaining items (will include deleted items if there's a beforeRemove callback)
         for (var i = 0, nextNode = ko.virtualElements.firstChild(domNode), lastNode, node; mapData = itemsToProcess[i]; i++) {

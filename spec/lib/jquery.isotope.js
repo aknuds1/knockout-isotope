@@ -559,6 +559,9 @@
           }
         }
         // apply sort data to element
+	console.log('Setting isotope-sort-data to ');
+       console.log(sortData);
+	console.log(this);
         $.data( this, 'isotope-sort-data', sortData );
       });
     },
