@@ -2,14 +2,14 @@
 <package >
   <metadata>
     <id>Knockout-Isotope</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <authors>Arve Knudsen</authors>
     <owners>Arve Knudsen</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/aknuds1/knockout-isotope</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Isotope Knockout binding.</description>
-    <releaseNotes>First release</releaseNotes>
+    <releaseNotes>Fix sorting of new elements</releaseNotes>
     <copyright>Copyright 2013</copyright>
     <tags>knockout isotope javascript</tags>
     <dependencies>
