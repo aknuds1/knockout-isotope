@@ -3332,8 +3332,10 @@ ko.exportSymbol('utils.compareArrays', ko.utils.compareArrays);
         //       have already been removed, and include any nodes that have been inserted among the previous collection
 
         // Rule [A]
-        while (contiguousNodeArray.length && !ko.utils.domNodeIsAttachedToDocument(contiguousNodeArray[0]))
+        while (contiguousNodeArray.length && !ko.utils.domNodeIsAttachedToDocument(contiguousNodeArray[0])) {
+          console.log('Removing leading element');
             contiguousNodeArray.splice(0, 1);
+        }
 
         // Rule [B]
         if (contiguousNodeArray.length > 1) {
@@ -3376,8 +3378,10 @@ ko.exportSymbol('utils.compareArrays', ko.utils.compareArrays);
 
     var lastMappingResultDomDataKey = "setDomNodeChildrenFromArrayMapping_lastMappingResult";
 
+    // Make DOM node children correspond to items in array
     ko.utils.setDomNodeChildrenFromArrayMapping = function (domNode, array, mapping, options, callbackAfterAddingNodes) {
         // Compare the provided array against the previous one
+	console.log('setDomNodeChildren');
         array = array || [];
         options = options || {};
         var isFirstExecution = ko.utils.domData.get(domNode, lastMappingResultDomDataKey) === undefined;
@@ -3425,6 +3429,7 @@ ko.exportSymbol('utils.compareArrays', ko.utils.compareArrays);
             switch (editScriptItem['status']) {
                 case "deleted":
                     if (movedIndex === undefined) {
+			var nodesFixedUp;
                         mapData = lastMappingResult[lastMappingResultIndex];
 
                         // Stop tracking changes to the mapping for these nodes
@@ -3432,7 +3437,10 @@ ko.exportSymbol('utils.compareArrays', ko.utils.compareArrays);
                             mapData.dependentObservable.dispose();
 
                         // Queue these nodes for later removal
-                        nodesToDelete.push.apply(nodesToDelete, fixUpNodesToBeMovedOrRemoved(mapData.mappedNodes));
+			console.log('Deleting nodes');
+                        nodesFixedUp = fixUpNodesToBeMovedOrRemoved(mapData.mappedNodes);
+                        console.log(nodesFixedUp[1]);
+                        nodesToDelete.push.apply(nodesToDelete, nodesFixedUp);
                         if (options['beforeRemove']) {
                             itemsForBeforeRemoveCallbacks[i] = mapData;
                             itemsToProcess.push(mapData);
@@ -3469,6 +3477,8 @@ ko.exportSymbol('utils.compareArrays', ko.utils.compareArrays);
         for (var i = 0, nextNode = ko.virtualElements.firstChild(domNode), lastNode, node; mapData = itemsToProcess[i]; i++) {
             // Get nodes for newly added items
             if (!mapData.mappedNodes) {
+              console.log('New node at ' + i + ':');
+              console.log('mapData');
                 var newMapData = mapNodeAndRefreshWhenChanged(domNode, mapping, mapData.arrayEntry, callbackAfterAddingNodes, mapData.indexObservable),
                     beforeAddItems = [];
                 ko.utils.extend(mapData, newMapData);
@@ -3479,8 +3489,10 @@ ko.exportSymbol('utils.compareArrays', ko.utils.compareArrays);
 
             // Put nodes in the right place if they aren't there already
             for (var j = 0; node = mapData.mappedNodes[j]; nextNode = node.nextSibling, lastNode = node, j++) {
-                if (node !== nextNode)
+                if (node !== nextNode) {
+                  console.log('Moving node ' + j);
                     ko.virtualElements.insertAfter(domNode, node, lastNode);
+                }
             }
 
             // Run the callbacks for newly added nodes (for example, to apply bindings, etc.)

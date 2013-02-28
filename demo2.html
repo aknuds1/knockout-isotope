@@ -1,0 +1,95 @@
+<html>
+  <head>
+    <title>Knockout-Isotope Demo</title>
+    
+    <link rel="stylesheet" type="text/css" href="lib/style2.css">
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="spec/lib/knockout-2.2.2.debug.js"></script>
+    <script type="text/javascript" src="spec/lib/jquery.isotope.js"></script>
+    <script type="text/javascript" src="spec/lib/JSLog.js"></script>
+
+    <script type="text/javascript" src="lib/knockout-isotope.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+        JSLog.SetLevel(4);
+        logger = JSLog.Register('Application');
+
+        var ViewModel = function () {
+          var self = this;
+          this.filterValue = ko.observable();
+          this.things = ko.observableArray([{type: 'type1', stuff: 'Thing1'},
+            {type: 'type1', stuff: 'Thing2'},
+            {type: 'type2', stuff: 'Thing3'},
+            {type: 'type2', stuff: 'Thing4'},
+            {type: 'type2', stuff: 'Thing5'},
+            {type: 'type2', stuff: 'Thing6'}
+            ]);
+
+          this.filters = ko.observableArray(['none', 'type1', 'type2']);
+
+          this.isoFilter = ko.observable(false);
+
+          function itemFilter(value) {
+            if (value != 'none') {
+              return ko.utils.arrayFilter(self.things(), function(thing) {
+                return thing.type === value;
+              });
+            } else {
+                return self.things();
+            }
+          }
+
+          this.isotopefilteredThings = ko.computed(function () {
+            var filter = self.isoFilter();
+            if (filter !== 'none') {
+              return ko.utils.arrayFilter(self.things(), function (thing) {
+                return thing.type === filter;
+              });
+            }
+            return self.things();
+          });
+
+          this.isotopeOptions = function () {
+            return {layoutMode: 'fitRows'};
+          };
+
+          this.foreachFilter = ko.observable(false);
+
+          this.filteredThings = ko.computed(function () {
+            var filter = self.foreachFilter(), result;
+            logger.debug('Foreach filter: ' + filter);
+            if (filter !== 'none') {
+              result = ko.utils.arrayFilter(self.things(), function (thing) {
+                return thing.type === filter;
+              });
+            }
+            else
+              result = self.things();
+
+            logger.debug('Filtered things: ' + result);
+            return result;
+          });
+        };
+
+        ko.applyBindings(new ViewModel());
+      });
+    </script>
+  </head>
+
+  <body>
+    <h1>Knockout Isotope Binding Demo 2</h1>
+    <h2>Isotope Binding</h2>
+    <select data-bind="options: filters, value: isoFilter"></select>
+    <div id="myContainer" data-bind="isotope: { data: isotopefilteredThings, isotopeOptions: isotopeOptions }">
+      <div class="thing" data-bind="text: stuff, css: type"></div>
+    </div>
+    <h2>Foreach Binding</h2>
+    <select data-bind="options: filters, value: foreachFilter"></select>
+    <div data-bind="foreach: { data: filteredThings}">
+      <div class="thing" data-bind="text: stuff, css: type"></div>
+    </div>
+  </body>
+</html>
+
+<!-- vim: set sts=2 sw=2 et: -->
