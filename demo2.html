@@ -79,14 +79,8 @@
 
   <body>
     <h1>Knockout Isotope Binding Demo 2</h1>
-    <h2>Isotope Binding</h2>
     <select data-bind="options: filters, value: isoFilter"></select>
     <div id="myContainer" data-bind="isotope: { data: isotopefilteredThings, isotopeOptions: isotopeOptions }">
-      <div class="thing" data-bind="text: stuff, css: type"></div>
-    </div>
-    <h2>Foreach Binding</h2>
-    <select data-bind="options: filters, value: foreachFilter"></select>
-    <div data-bind="foreach: { data: filteredThings}">
       <div class="thing" data-bind="text: stuff, css: type"></div>
     </div>
   </body>
