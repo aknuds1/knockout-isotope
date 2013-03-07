@@ -2,18 +2,18 @@
 <package >
   <metadata>
     <id>Knockout-Isotope</id>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <authors>Arve Knudsen</authors>
     <owners>Arve Knudsen</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/aknuds1/knockout-isotope</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Isotope Knockout binding.</description>
-    <releaseNotes>Fix sorting of new elements</releaseNotes>
+    <releaseNotes>Fix Knockout dependency.</releaseNotes>
     <copyright>Copyright 2013</copyright>
     <tags>knockout isotope javascript</tags>
     <dependencies>
-      <dependency id="knockoutjs" version="2.2.2" />
+      <dependency id="aknudsen.knockoutjs" version="2.2.4" />
     </dependencies>
   </metadata>
   <files>
