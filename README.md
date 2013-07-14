@@ -101,4 +101,8 @@ Knockout-Isotope is tested through Jasmine specifications, contained in
 'spec/isotopeBinding.js'. In order to run them, open 'spec/runner.html' in a
 browser.
 
+## Downloads
+
+Downloads for Knockout-Isotope (including required Knockout version) are available at [Google Drive](https://drive.google.com/folderview?id=0B-CYTCgIOsvrQ2EwaHVBdGZGY0k&usp=sharing).
+
 <!-- vim: set ff=unix sts=4 sw=4 et: -->
