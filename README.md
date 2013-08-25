@@ -1,6 +1,7 @@
 # Knockout-Isotope
 
-Isotope binding for Knockout.
+Isotope binding for Knockout. Visit the [project home page](http://aknuds1.github.io/knockout-isotope/)
+to find builds (including the required version of Knockout) of the code.
 
 ## Description
 
