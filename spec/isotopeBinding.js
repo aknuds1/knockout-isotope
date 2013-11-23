@@ -129,18 +129,16 @@ describe('Knockout-Isotope', function () {
         expect(isotope.calls.length).toEqual(1);
     });
 
-    it('registers added elements with isotope', function () {
-        var addItemsCalls, addItemsCall, value = 3;
+    it('inserts added elements through isotope', function () {
+        var insertCalls, insertCall, value = 3;
         applyBindings();
         viewModel.items.unshift(value);
 
-        addItemsCalls = getIsotopeCalls('addItems');
-        // There should be one call to addItems
-        expect(addItemsCalls.length).toEqual(1);
-        addItemsCall = addItemsCalls[0];
-        expect(addItemsCall.call.args[1].text()).toEqual(value.toString());
-        // And then a no-arguments call, to perform element filtering
-        expect(isotope.calls[addItemsCall.callIndex+1].args.length).toEqual(0);
+        insertCalls = getIsotopeCalls('insert');
+        // There should be one call to insert
+        expect(insertCalls.length).toEqual(1);
+        insertCall = insertCalls[0];
+        expect(insertCall.call.args[1].text()).toEqual(value.toString());
     });
 
     it('deletes elements through isotope', function () {
